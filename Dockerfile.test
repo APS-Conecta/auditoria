@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 APS Conecta
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# The unit suite's image: PHP 8.2 CLI and composer, nothing else. The unit tests run against
+# the OCP interfaces of nextcloud/ocp; what needs a live server runs against compose.dev.yaml.
+FROM php:8.2-cli
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+# zip lets composer unpack dist archives instead of cloning sources.
+RUN install-php-extensions zip
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+WORKDIR /app
