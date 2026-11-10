@@ -4,6 +4,6 @@ version = 1
 
 # Files that cannot carry a comment header.
 [[annotations]]
-path = ["README.md", "AGENTS.md", "composer.json", "composer.lock"]
+path = ["composer.json", "composer.lock"]
 SPDX-FileCopyrightText = "2026 APS Conecta"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
