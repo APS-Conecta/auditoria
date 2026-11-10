@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 APS Conecta
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# The app's release, through the org's shared workflow: pack on every pull request; on a v* tag
+# equal to v + info.xml's version, sign and publish from this repo's `release` environment.
+name: Release
+on:
+  pull_request:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  release:
+    uses: APS-Conecta/.github/.github/workflows/app-release.yml@064711df8c14749c1de0be7f4975cf737103eed9 # 2026-11-10
+    permissions:
+      contents: write
+    with:
+      app-id: auditoria
+      php-only: true
+      build: find lib -name '*.php' -print0 | xargs -0 -n 1 php -l
+    secrets:
+      APP_SIGNING_KEY: ${{ secrets.APP_SIGNING_KEY }}
+      APP_SIGNING_KEY_PASSWORD: ${{ secrets.APP_SIGNING_KEY_PASSWORD }}

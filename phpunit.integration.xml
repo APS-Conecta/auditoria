@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SPDX-FileCopyrightText: 2026 APS Conecta
+  SPDX-License-Identifier: AGPL-3.0-or-later
+
+  Integration suite: runs INSIDE the dev Nextcloud container (compose.dev.yaml), over HTTP against
+  the real route, read back from admin_audit's audit.log. The app is mounted read-only: no cache.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheResult="false"
+         failOnWarning="true"
+         failOnDeprecation="true"
+         failOnNotice="true">
+    <testsuites>
+        <testsuite name="integration">
+            <directory>tests/integration</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

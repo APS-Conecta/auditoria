@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: 2026 APS Conecta
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Throwaway Nextcloud 34 for the integration suite: this repo mounted as the app, admin_audit and
+# AppAPI from the image, and a stand-in ExApp that AppAPI registers the connector against.
+# No host port: the suite runs inside the nextcloud container. SQLite: the app keeps no table.
+# Throw it away whenever it gets in the way (`make instance-clean`).
+name: auditoria-dev
+
+x-image: &image nextcloud:34.0.5-apache@sha256:d8ad0b77c863611b9fab6e72a82a5d35fbcb218b660f9f20fec9941a50806281
+
+services:
+  nextcloud:
+    image: *image
+    restart: "no"
+    mem_limit: 1g
+    volumes:
+      - dev_nextcloud:/var/www/html
+      - .:/var/www/html/custom_apps/auditoria:ro
+    environment:
+      SQLITE_DATABASE: nextcloud
+      NEXTCLOUD_ADMIN_USER: admin
+      NEXTCLOUD_ADMIN_PASSWORD: admin
+      NEXTCLOUD_TRUSTED_DOMAINS: localhost
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/status.php || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 30s
+
+  exapp:
+    image: *image
+    restart: "no"
+    mem_limit: 128m
+    # One port per ExApp: AppAPI keeps a daemon's ports unique.
+    entrypoint: ["sh", "-c", "php -S 0.0.0.0:9001 /exapp.php & exec php -S 0.0.0.0:9000 /exapp.php"]
+    volumes:
+      - ./tests/integration/exapp.php:/exapp.php:ro
+
+volumes:
+  dev_nextcloud:
